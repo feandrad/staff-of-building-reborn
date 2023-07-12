@@ -1,7 +1,6 @@
 # Staff of Building
 
 Staff of Building adds in new ~~wands~~ staffs which can be used to speed up building. 
-It is built for the 1.16 snapshots on Fabric.
 There is a staff for each material, as shown below:
 
 ##### Wooden

@@ -1,15 +1,16 @@
 package draylar.staffofbuilding.registry;
 
 import draylar.staffofbuilding.StaffOfBuilding;
+import draylar.staffofbuilding.config.StaffOfBuildingConfig;
 import draylar.staffofbuilding.item.BuilderStaffItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ToolMaterials;
 import net.minecraft.util.registry.Registry;
 
-import static draylar.staffofbuilding.StaffOfBuilding.CONFIG;
-
 public class ModItems {
+
+    static StaffOfBuildingConfig CONFIG = new StaffOfBuildingConfig();
 
     public static final Item WOODEN_BUILDER_STAFF = register("wooden_builder_staff", new BuilderStaffItem(new Item.Settings().group(ItemGroup.TOOLS), CONFIG.woodenSize, ToolMaterials.WOOD));
     public static final Item STONE_BUILDER_STAFF = register("stone_builder_staff", new BuilderStaffItem(new Item.Settings().group(ItemGroup.TOOLS), CONFIG.stoneSize, ToolMaterials.STONE)); // +8
