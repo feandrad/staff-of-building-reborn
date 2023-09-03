@@ -39,7 +39,7 @@ public abstract class WorldRendererMixin {
 
     @Shadow @Final private MinecraftClient client;
     @Shadow private ClientWorld world;
-    @Shadow private static void drawShapeOutline(MatrixStack matrixStack, VertexConsumer vertexConsumer, VoxelShape voxelShape, double d, double e, double f, float g, float h, float i, float j) { }
+    @Shadow private static void drawShapeOutline(MatrixStack matrixStack, VertexConsumer vertexConsumer, VoxelShape voxelShape, double offsetX, double offsetY, double offsetZ, float red, float green, float blue, float alpha, boolean colorize) {}
 
     @Shadow @Final private BufferBuilderStorage bufferBuilders;
     @Unique private boolean sob_renderedHighlight = false;
@@ -89,7 +89,7 @@ public abstract class WorldRendererMixin {
                             // render shape
                             VertexConsumerProvider.Immediate immediate = bufferBuilders.getEntityVertexConsumers();
                             VertexConsumer linesBuffer = immediate.getBuffer(RenderLayer.getLines());
-                            drawShapeOutline(matrices, linesBuffer, shape, (double) lookingAtPos.getX() - camera.getPos().x, (double) lookingAtPos.getY() - camera.getPos().y, (double) lookingAtPos.getZ() - camera.getPos().z, 0.0F, 0.0F, 0.0F, 0.4F);
+                            drawShapeOutline(matrices, linesBuffer, shape, (double) lookingAtPos.getX() - camera.getPos().x, (double) lookingAtPos.getY() - camera.getPos().y, (double) lookingAtPos.getZ() - camera.getPos().z, 0.0F, 0.0F, 0.0F, 0.4F, true);
                             sob_renderedHighlight = true;
                         }
                     }
