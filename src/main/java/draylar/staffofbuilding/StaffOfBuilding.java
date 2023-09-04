@@ -1,5 +1,6 @@
 package draylar.staffofbuilding;
 
+import draylar.staffofbuilding.registry.ModItemGroups;
 import draylar.staffofbuilding.registry.ModItems;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.block.AbstractCandleBlock;
@@ -20,6 +21,7 @@ public class StaffOfBuilding implements ModInitializer {
     @Override
     public void onInitialize() {
         ModItems.init();
+        ModItemGroups.init();
     }
 
     public static Identifier id(String name) {
