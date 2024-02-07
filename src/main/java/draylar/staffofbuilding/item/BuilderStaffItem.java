@@ -14,7 +14,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
@@ -130,6 +129,8 @@ public class BuilderStaffItem extends Item {
                     if (taken > 0) {
                         world.playSound(null, player.getBlockPos(), state.getSoundGroup().getPlaceSound(), SoundCategory.PLAYERS, state.getSoundGroup().getVolume(), state.getSoundGroup().getPitch());
                     }
+
+                    // TODO: Save positions and blocks to Player data to prepare undo command
                 }
 
                 return ActionResult.SUCCESS;
