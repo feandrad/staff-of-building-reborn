@@ -1,4 +1,4 @@
-package draylar.staffofbuilding.config;
+package draylar.staffofbuilding.fabric.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static draylar.staffofbuilding.StaffOfBuilding.MOD_ID;
+import static draylar.staffofbuilding.fabric.StaffOfBuilding.MOD_ID;
 
 public class StaffOfBuildingConfig {
 

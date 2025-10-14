@@ -16,7 +16,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "draylar.staffofbuilding.StaffOfBuilding"
+      "draylar.staffofbuilding.fabric.StaffOfBuilding"
     ]
   },
   "mixins": [
@@ -25,6 +25,6 @@
   "depends": {
     "fabricloader": ">=0.14.21",
     "fabric": "*",
-    "minecraft": ">=1.19.3"
+    "minecraft": ">=1.21.9"
   }
 }

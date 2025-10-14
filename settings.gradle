@@ -1,7 +1,20 @@
 pluginManagement {
     repositories {
-        maven { url = "https://maven.fabricmc.net/" }
-        maven { url = "https://maven.quiltmc.org/repository/release" }
+        maven { url "https://maven.fabricmc.net/" }
+        maven { url "https://maven.architectury.dev/" }
+        maven { url "https://files.minecraftforge.net/maven/" }
         gradlePluginPortal()
     }
+    plugins {
+        id 'org.jetbrains.kotlin.jvm' version '2.2.0'
+    }
 }
+plugins {
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
+}
+
+rootProject.name = 'staff-of-building'
+
+include 'common'
+include 'fabric'
+include 'neoforge'

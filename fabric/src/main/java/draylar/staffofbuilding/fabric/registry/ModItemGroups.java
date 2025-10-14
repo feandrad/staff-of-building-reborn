@@ -1,4 +1,4 @@
-package draylar.staffofbuilding.registry;
+package draylar.staffofbuilding.fabric.registry;
 
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.ItemGroups;

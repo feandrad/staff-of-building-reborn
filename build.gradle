@@ -1,50 +1,103 @@
+buildscript {
+    ext.kotlin_version = '2.2.0'
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
 plugins {
-    id "fabric-loom" version "1.3.+"
-    id 'maven-publish'
+    id 'dev.architectury.loom' version '1.11-SNAPSHOT' apply false
+    id 'architectury-plugin' version '3.4-SNAPSHOT'
+    id 'com.github.johnrengelman.shadow' version '8.1.1' apply false
+}
+apply plugin: 'kotlin'
+
+architectury {
+    minecraft = project.minecraft_version
 }
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
+allprojects {
+    group = rootProject.maven_group
+    version = rootProject.mod_version
+}
 
-archivesBaseName = project.archives_base_name
-version = project.minecraft_version + "-" + project.mod_version
-group = project.maven_group
+subprojects {
+    apply plugin: 'dev.architectury.loom'
+    apply plugin: 'architectury-plugin'
+    apply plugin: 'maven-publish'
 
-def dataOutput = "src/main/generated"
+    base {
+        // Set up a suffixed format for the mod jar names, e.g. `example-fabric`.
+        archivesName = "$rootProject.archives_name-$project.name"
+    }
 
-loom {
-    runs {
-        datagen {
-            server()
+    repositories {
+        // Add repositories to retrieve artifacts from in here.
+        // You should only use this when depending on other mods because
+        // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
+        // See https://docs.gradle.org/current/userguide/declaring_repositories.html
+        // for more information about repositories.
+    }
 
-            name "Data Generation"
-            vmArg "-Dfabric-api.datagen"
-            vmArg "-Dfabric-api.datagen.output-dir=${file(dataOutput)}"
+    dependencies {
+        minecraft "net.minecraft:minecraft:$rootProject.minecraft_version"
+        mappings loom.officialMojangMappings()
+    }
 
-            runDir "build/datagen"
+    java {
+        toolchain.languageVersion = org.gradle.jvm.toolchain.JavaLanguageVersion.of(21)
+        // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+        // if it is present.
+        // If you remove this line, sources will not be generated.
+        withSourcesJar()
+
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        it.options.release = 21
+    }
+
+    // Configure Maven publishing.
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                artifactId = base.archivesName.get()
+                from components.java
+            }
+        }
+
+        // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
+        repositories {
+            // Add repositories to publish to here.
+            // Notice: This block does NOT have the same function as the block in the top level.
+            // The repositories here will be used for publishing your artifact, not for
+            // retrieving dependencies.
         }
     }
 }
-
-sourceSets {
-    main {
-        resources {
-            srcDirs += dataOutput
-        }
-    }
+repositories {
+    mavenCentral()
 }
-
 dependencies {
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+}
+kotlin {
+    jvmToolchain(21)
 }
 
-processResources {
-    inputs.property "version", project.version
+project(':fabric') {
+    loom {
+        // Loom will automatically set this up based on the file name.
+        // side = "client"
+    }
 
-    filesMatching("fabric.mod.json") {
-        expand "version": project.version
+    dependencies {
+        // We depend on fabric loader here to use the fabric @Environment annotations and get the loader in the dev runtime.
+        modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+
+        // We depend on the fabric API here.
+        modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
     }
 }

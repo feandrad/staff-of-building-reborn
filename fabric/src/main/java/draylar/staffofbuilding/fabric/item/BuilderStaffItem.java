@@ -1,25 +1,11 @@
-package draylar.staffofbuilding.item;
+package draylar.staffofbuilding.fabric.item;
 
-import draylar.staffofbuilding.StaffOfBuilding;
-import draylar.staffofbuilding.api.SelectionCalculator;
+import draylar.staffofbuilding.fabric.StaffOfBuilding;
+import draylar.staffofbuilding.fabric.api.SelectionCalculator;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ToolMaterial;
 
 import java.util.List;
 

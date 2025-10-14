@@ -1,4 +1,4 @@
-package draylar.staffofbuilding.api;
+package draylar.staffofbuilding.fabric.api;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;

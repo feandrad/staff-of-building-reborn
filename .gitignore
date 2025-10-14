@@ -7,3 +7,11 @@ logs/
 /staff-of-building.iml
 /staff-of-building.ipr
 /staff-of-building.iws
+/fabric/.gradle/
+/fabric/build/
+/common/.gradle/
+/common/build/
+/common/run/
+/neoforge/run/
+/neoforge/build/
+/neoforge/.gradle/

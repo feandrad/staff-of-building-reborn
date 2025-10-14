@@ -1,8 +1,8 @@
-package draylar.staffofbuilding.registry;
+package draylar.staffofbuilding.fabric.registry;
 
-import draylar.staffofbuilding.StaffOfBuilding;
-import draylar.staffofbuilding.config.StaffOfBuildingConfig;
-import draylar.staffofbuilding.item.BuilderStaffItem;
+import draylar.staffofbuilding.fabric.StaffOfBuilding;
+import draylar.staffofbuilding.fabric.config.StaffOfBuildingConfig;
+import draylar.staffofbuilding.fabric.item.BuilderStaffItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ToolMaterials;
 import net.minecraft.registry.Registries;

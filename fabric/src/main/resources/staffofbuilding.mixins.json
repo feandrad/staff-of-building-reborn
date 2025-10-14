@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "draylar.staffofbuilding.mixin",
+  "package": "draylar.staffofbuilding.fabric.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
 

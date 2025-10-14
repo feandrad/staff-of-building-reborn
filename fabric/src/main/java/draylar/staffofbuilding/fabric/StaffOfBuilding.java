@@ -1,16 +1,15 @@
-package draylar.staffofbuilding;
+package draylar.staffofbuilding.fabric;
 
-import draylar.staffofbuilding.registry.ModItemGroups;
-import draylar.staffofbuilding.registry.ModItems;
-import net.fabricmc.api.ModInitializer;
-import net.minecraft.block.AbstractCandleBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.CropBlock;
-import net.minecraft.util.Identifier;
-
+import draylar.staffofbuilding.fabric.registry.ModItemGroups;
+import draylar.staffofbuilding.fabric.registry.ModItems;
 import java.util.Arrays;
 import java.util.List;
+import net.fabricmc.api.ModInitializer;
+import net.minecraft.world.level.block.AbstractCandleBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.CropBlock;
+import org.intellij.lang.annotations.Identifier;
 
 public class StaffOfBuilding implements ModInitializer {
 
