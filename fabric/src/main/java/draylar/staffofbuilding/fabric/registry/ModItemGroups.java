@@ -1,19 +1,18 @@
 package draylar.staffofbuilding.fabric.registry;
 
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.minecraft.item.ItemGroups;
+import net.minecraft.world.item.CreativeModeTabs;
 
 public class ModItemGroups {
     public static void init() {
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register(entries -> {
-                    entries.add(ModItems.STAFF_BUILDING_WOOD);
-                    entries.add(ModItems.STAFF_BUILDING_STONE);
-                    entries.add(ModItems.STAFF_BUILDING_IRON);
-                    entries.add(ModItems.STAFF_BUILDING_GOLDEN);
-                    entries.add(ModItems.STAFF_BUILDING_DIAMOND);
-                    entries.add(ModItems.STAFF_BUILDING_NETHERITE);
-                    entries.add(ModItems.STAFF_BUILDING_INFINITE);
-                }
-        );
+        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(entries -> {
+            entries.accept(ModItems.STAFF_BUILDING_WOOD);
+            entries.accept(ModItems.STAFF_BUILDING_STONE);
+            entries.accept(ModItems.STAFF_BUILDING_IRON);
+            entries.accept(ModItems.STAFF_BUILDING_GOLDEN);
+            entries.accept(ModItems.STAFF_BUILDING_DIAMOND);
+            entries.accept(ModItems.STAFF_BUILDING_NETHERITE);
+            entries.accept(ModItems.STAFF_BUILDING_INFINITE);
+        });
     }
 }

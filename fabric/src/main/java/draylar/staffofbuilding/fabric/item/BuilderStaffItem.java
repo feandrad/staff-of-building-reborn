@@ -4,7 +4,29 @@ import draylar.staffofbuilding.fabric.StaffOfBuilding;
 import draylar.staffofbuilding.fabric.api.SelectionCalculator;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ToolMaterial;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.item.component.TooltipDisplay;
+import java.util.function.Consumer;
 import net.minecraft.world.item.ToolMaterial;
 
 import java.util.List;
@@ -12,13 +34,13 @@ import java.util.List;
 public class BuilderStaffItem extends Item {
 
     private final int size;
-    private final ToolMaterial material;
     private boolean invincible = false;
 
-    public BuilderStaffItem(Settings settings, int size, ToolMaterial material) {
-        super(settings.maxDamage(material == null ? 0 : material.getDurability()));
+    public BuilderStaffItem(Properties properties, int size, ToolMaterial material) {
+        super(properties.durability(material == null ? 0 : material.durability())
+                .enchantable(material == null ? 100 : material.enchantmentValue())
+                .repairable(material == null ? null : material.repairItems()));
         this.size = size;
-        this.material = material;
     }
 
     public BuilderStaffItem invincible() {
@@ -27,103 +49,127 @@ public class BuilderStaffItem extends Item {
     }
 
     @Override
-    public boolean isDamageable() {
-        return !invincible && super.isDamageable();
-    }
-
-    @Override
-    public boolean canRepair(ItemStack stack, ItemStack ingredient) {
-        return material != null && material.getRepairIngredient().test(ingredient);
-    }
-
-    @Override
-    public int getEnchantability() {
-        return material == null ? 100 : material.getEnchantability();
-    }
-
-    @Override
     @Environment(EnvType.CLIENT)
-    public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-        super.appendTooltip(stack, world, tooltip, context);
-        tooltip.add(Text.translatable("staffofbuilding.placement_range", size).formatted(Formatting.GRAY));
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay,
+            java.util.function.Consumer<Component> tooltip, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tooltipDisplay, tooltip, tooltipFlag);
+        tooltip.accept(Component.translatable("staffofbuilding.placement_range", size).withStyle(ChatFormatting.GRAY));
     }
 
     @Override
-    public ActionResult useOnBlock(ItemUsageContext context) {
-        Direction side = context.getSide();
-        World world = context.getWorld();
-        BlockPos pos = context.getBlockPos();
-        BlockState state = world.getBlockState(pos);
-        PlayerEntity player = context.getPlayer();
+    public InteractionResult useOn(UseOnContext context) {
+        Direction side = context.getClickedFace();
+        Level level = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        BlockState state = level.getBlockState(pos);
+        Player player = context.getPlayer();
         Block block = state.getBlock();
         Item item = block.asItem();
 
         // check to make sure the block we're placing off has an item
-        if (player != null && item != Items.AIR && context.getHand() == Hand.MAIN_HAND) {
+        if (player != null && item != Items.AIR && context.getHand() == InteractionHand.MAIN_HAND) {
             // get amount of required item in player inventory
-            int count = player.getInventory().count(item);
+            int count = 0;
+            for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+                if (player.getInventory().getItem(i).is(item)) {
+                    count += player.getInventory().getItem(i).getCount();
+                }
+            }
+            if (player.getOffhandItem().is(item)) {
+                count += player.getOffhandItem().getCount();
+            }
 
-            // run placement logic if they have at least 1 of the item (or if they are a creative user)
+            // run placement logic if they have at least 1 of the item (or if they are a
+            // creative user)
             if (count > 0 || player.isCreative()) {
-                // potentially reset state to prevent dupe or similar  mechanics
+                // potentially reset state to prevent dupe or similar mechanics
                 BlockState finalState = state;
-                if (StaffOfBuilding.RESET_LIST.contains(state.getBlock()) || StaffOfBuilding.CLASS_RESET_LIST.stream().anyMatch(resetClass -> resetClass.isAssignableFrom(finalState.getBlock().getClass()))) {
-                    state = state.getBlock().getDefaultState();
+                if (StaffOfBuilding.RESET_LIST.contains(state.getBlock()) || StaffOfBuilding.CLASS_RESET_LIST.stream()
+                        .anyMatch(resetClass -> resetClass.isAssignableFrom(finalState.getBlock().getClass()))) {
+                    state = state.getBlock().defaultBlockState();
                 }
 
-                // get number of blocks to place (min between max size and the count of items in inventory)
+                // get number of blocks to place (min between max size and the count of items in
+                // inventory)
                 int maxChecks = Math.min(size, player.isCreative() ? size : count);
-                List<BlockPos> positions = SelectionCalculator.calculateSelection(world, pos, side, maxChecks);
+                List<BlockPos> positions = SelectionCalculator.calculateSelection(level, pos, side, maxChecks);
                 int taken = 0;
 
                 // do not play animation if we are not placing blocks
                 if (positions.isEmpty()) {
-                    return ActionResult.FAIL;
+                    return InteractionResult.FAIL;
                 }
 
-                if (!world.isClient) {
+                if (!level.isClientSide()) {
                     // place blocks
                     for (BlockPos position : positions) {
-                        BlockState originalState = world.getBlockState(position);
+                        BlockState originalState = level.getBlockState(position);
                         if (originalState.isAir() || !originalState.getFluidState().isEmpty()) {
-                            world.setBlockState(position, state);
+                            level.setBlock(position, state, 3);
                             taken++;
                         }
                     }
 
                     // take items from survival inventory
                     if (!player.isCreative()) {
-                        player.getInventory().remove(stack -> stack.getItem().equals(item), taken, player.getInventory());
+                        int remaining = taken;
+                        // remove items logic
+                        // Simple removal logic since we don't have a helper easily available
+                        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+                            ItemStack s = player.getInventory().getItem(i);
+                            if (s.is(item)) {
+                                int toRemove = Math.min(remaining, s.getCount());
+                                s.shrink(toRemove);
+                                remaining -= toRemove;
+                                if (remaining <= 0)
+                                    break;
+                            }
+                        }
+                        if (remaining > 0 && player.getOffhandItem().is(item)) {
+                            player.getOffhandItem().shrink(remaining);
+                        }
                     }
 
                     // damage item
-                    if (context.getStack().isDamageable()) {
+                    if (context.getItemInHand().isDamageableItem() && !invincible) {
                         int damage = taken;
 
                         // Each damage tick has a [0% / 50% / 66% / 75%] to be ignored
                         for (int i = 0; i < damage; i++) {
-                            if (world.random.nextInt(1 + EnchantmentHelper.getLevel(Enchantments.UNBREAKING, context.getStack())) == 0) {
+                            if (level.random
+                                    .nextInt(
+                                            1 + EnchantmentHelper.getItemEnchantmentLevel(
+                                                    level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT)
+                                                            .getOrThrow(Enchantments.UNBREAKING),
+                                                    context.getItemInHand())) == 0) {
                                 damage--;
                             }
                         }
 
-                        context.getStack().damage(Math.max(0, damage), player, (livingEntity) -> {
-                            livingEntity.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND);
-                        });
+                        if (player instanceof net.minecraft.server.level.ServerPlayer
+                                && level instanceof net.minecraft.server.level.ServerLevel) {
+                            context.getItemInHand().hurtAndBreak(Math.max(0, damage),
+                                    (net.minecraft.server.level.ServerLevel) level,
+                                    (net.minecraft.server.level.ServerPlayer) player, itemStack -> {
+                                        // TODO: Find correct method for break event or play sound manually
+                                        // player.broadcastBreakEvent(EquipmentSlot.MAINHAND);
+                                    });
+                        }
                     }
 
                     if (taken > 0) {
-                        world.playSound(null, player.getBlockPos(), state.getSoundGroup().getPlaceSound(), SoundCategory.PLAYERS, state.getSoundGroup().getVolume(), state.getSoundGroup().getPitch());
+                        level.playSound(null, player.blockPosition(), state.getSoundType().getPlaceSound(),
+                                SoundSource.PLAYERS, state.getSoundType().getVolume(), state.getSoundType().getPitch());
                     }
 
                     // TODO: Save positions and blocks to Player data to prepare undo command
                 }
 
-                return ActionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
 
-        return ActionResult.FAIL;
+        return InteractionResult.FAIL;
     }
 
     public int getMaxSize() {
