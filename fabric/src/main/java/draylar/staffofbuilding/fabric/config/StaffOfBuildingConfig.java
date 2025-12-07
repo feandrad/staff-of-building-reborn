@@ -28,6 +28,7 @@ public class StaffOfBuildingConfig {
     public int netheriteSize = 32;
     public boolean infiniteEnabled = true;
     public int infiniteSize = 64;
+    public int experienceCost = 1;
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final Path CONFIG_PATH;

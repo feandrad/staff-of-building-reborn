@@ -1,5 +1,6 @@
 package draylar.staffofbuilding.fabric;
 
+import draylar.staffofbuilding.fabric.config.StaffOfBuildingConfig;
 import draylar.staffofbuilding.fabric.registry.ModItemGroups;
 import draylar.staffofbuilding.fabric.registry.ModItems;
 import java.util.Arrays;
@@ -14,6 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 public class StaffOfBuilding implements ModInitializer {
 
     public static final String MOD_ID = "staffofbuilding";
+    public static final StaffOfBuildingConfig CONFIG = StaffOfBuildingConfig.load();
     public static final List<Block> RESET_LIST = Arrays.asList(Blocks.SNOW, Blocks.COMPOSTER, Blocks.CAULDRON,
             Blocks.CAKE, Blocks.BEEHIVE, Blocks.BREWING_STAND, Blocks.TURTLE_EGG, Blocks.SEA_PICKLE);
     public static final List<Class<? extends Block>> CLASS_RESET_LIST = Arrays.asList(CropBlock.class,

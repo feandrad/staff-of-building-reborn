@@ -99,8 +99,12 @@ public class BuilderStaffItem extends Item {
 
                 if (!level.isClientSide()) {
                     // check if player has enough xp
-                    int totalCost = positions.size();
-                    if (!player.isCreative() && player.totalExperience < totalCost) {
+                    // calculate cost: blocks * cost_per_block
+                    // if cost_per_block is <= 0, total cost is 0
+                    int costPerBlock = StaffOfBuilding.CONFIG.experienceCost;
+                    int totalCost = costPerBlock > 0 ? positions.size() * costPerBlock : 0;
+
+                    if (totalCost > 0 && !player.isCreative() && player.totalExperience < totalCost) {
                         return InteractionResult.FAIL;
                     }
 
@@ -111,8 +115,8 @@ public class BuilderStaffItem extends Item {
                                 .canBeReplaced(new net.minecraft.world.item.context.BlockPlaceContext(context))) {
                             if (level.setBlock(position, state, 3)) {
                                 taken++;
-                                if (!player.isCreative()) {
-                                    player.giveExperiencePoints(-1);
+                                if (totalCost > 0 && !player.isCreative()) {
+                                    player.giveExperiencePoints(-costPerBlock);
                                 }
                             }
                         }
