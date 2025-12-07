@@ -26,9 +26,6 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.component.TooltipDisplay;
-import java.util.function.Consumer;
-import net.minecraft.world.item.ToolMaterial;
-
 import java.util.List;
 
 public class BuilderStaffItem extends Item {
@@ -101,12 +98,23 @@ public class BuilderStaffItem extends Item {
                 }
 
                 if (!level.isClientSide()) {
+                    // check if player has enough xp
+                    int totalCost = positions.size();
+                    if (!player.isCreative() && player.totalExperience < totalCost) {
+                        return InteractionResult.FAIL;
+                    }
+
                     // place blocks
                     for (BlockPos position : positions) {
                         BlockState originalState = level.getBlockState(position);
-                        if (originalState.isAir() || !originalState.getFluidState().isEmpty()) {
-                            level.setBlock(position, state, 3);
-                            taken++;
+                        if (originalState
+                                .canBeReplaced(new net.minecraft.world.item.context.BlockPlaceContext(context))) {
+                            if (level.setBlock(position, state, 3)) {
+                                taken++;
+                                if (!player.isCreative()) {
+                                    player.giveExperiencePoints(-1);
+                                }
+                            }
                         }
                     }
 
