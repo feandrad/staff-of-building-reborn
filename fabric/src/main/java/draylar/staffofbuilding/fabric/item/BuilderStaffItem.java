@@ -4,28 +4,24 @@ import draylar.staffofbuilding.fabric.StaffOfBuilding;
 import draylar.staffofbuilding.fabric.api.SelectionCalculator;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ToolMaterial;
-import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.player.Player;
-
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+
 import java.util.List;
 
 public class BuilderStaffItem extends Item {
@@ -108,12 +104,15 @@ public class BuilderStaffItem extends Item {
                         return InteractionResult.FAIL;
                     }
 
+                    java.util.Map<BlockPos, BlockState> originalStates = new java.util.HashMap<>();
+
                     // place blocks
                     for (BlockPos position : positions) {
                         BlockState originalState = level.getBlockState(position);
                         if (originalState
                                 .canBeReplaced(new net.minecraft.world.item.context.BlockPlaceContext(context))) {
                             if (level.setBlock(position, state, 3)) {
+                                originalStates.put(position, originalState);
                                 taken++;
                                 if (totalCost > 0 && !player.isCreative()) {
                                     player.giveExperiencePoints(-costPerBlock);
@@ -172,9 +171,13 @@ public class BuilderStaffItem extends Item {
                     if (taken > 0) {
                         level.playSound(null, player.blockPosition(), state.getSoundType().getPlaceSound(),
                                 SoundSource.PLAYERS, state.getSoundType().getVolume(), state.getSoundType().getPitch());
-                    }
 
-                    // TODO: Save positions and blocks to Player data to prepare undo command
+                        // Save positions and blocks to Player data to prepare undo command
+                        if (player instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
+                            draylar.staffofbuilding.fabric.util.BlockUndoManager.record(serverPlayer, level,
+                                    originalStates, item, taken);
+                        }
+                    }
                 }
 
                 return InteractionResult.SUCCESS;

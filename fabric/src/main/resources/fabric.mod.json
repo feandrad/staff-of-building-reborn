@@ -17,6 +17,9 @@
   "entrypoints": {
     "main": [
       "draylar.staffofbuilding.fabric.StaffOfBuilding"
+    ],
+    "client": [
+      "draylar.staffofbuilding.fabric.StaffOfBuildingClient"
     ]
   },
   "mixins": [
