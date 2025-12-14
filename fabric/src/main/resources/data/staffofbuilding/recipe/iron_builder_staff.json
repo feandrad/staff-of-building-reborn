@@ -10,10 +10,10 @@
       "item": "minecraft:stick"
     },
     "X": {
-      "item": "minecraft:oak_planks"
+      "item": "minecraft:iron_ingot"
     }
   },
   "result": {
-    "item": "staffofbuilding:wooden_builder_staff"
+    "id": "staffofbuilding:iron_builder_staff"
   }
 }

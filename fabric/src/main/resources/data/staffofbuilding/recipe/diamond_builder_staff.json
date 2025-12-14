@@ -10,10 +10,10 @@
       "item": "minecraft:stick"
     },
     "X": {
-      "item": "minecraft:iron_ingot"
+      "item": "minecraft:diamond"
     }
   },
   "result": {
-    "item": "staffofbuilding:iron_builder_staff"
+    "id": "staffofbuilding:diamond_builder_staff"
   }
 }
