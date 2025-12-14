@@ -18,6 +18,8 @@ public class StaffOfBuildingConfig {
     public int woodenSize = 3;
     public boolean stoneEnabled = true;
     public int stoneSize = 6;
+    public boolean copperEnabled = true;
+    public int copperSize = 7;
     public boolean ironEnabled = true;
     public int ironSize = 9;
     public boolean goldenEnabled = true;

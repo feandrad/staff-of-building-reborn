@@ -1,11 +1,8 @@
 {
-  "type": "minecraft:smithing",
-  "base": {
-    "item": "staffofbuilding:diamond_builder_staff"
-  },
-  "addition": {
-    "item": "minecraft:netherite_ingot"
-  },
+  "type": "minecraft:smithing_transform",
+  "template": "minecraft:netherite_upgrade_smithing_template",
+  "base": "staffofbuilding:diamond_builder_staff",
+  "addition": "minecraft:netherite_ingot",
   "result": {
     "id": "staffofbuilding:netherite_builder_staff"
   }

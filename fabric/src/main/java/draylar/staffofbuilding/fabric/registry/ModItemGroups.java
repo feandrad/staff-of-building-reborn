@@ -8,6 +8,7 @@ public class ModItemGroups {
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(entries -> {
             entries.accept(ModItems.STAFF_BUILDING_WOOD);
             entries.accept(ModItems.STAFF_BUILDING_STONE);
+            entries.accept(ModItems.STAFF_BUILDING_COPPER);
             entries.accept(ModItems.STAFF_BUILDING_IRON);
             entries.accept(ModItems.STAFF_BUILDING_GOLDEN);
             entries.accept(ModItems.STAFF_BUILDING_DIAMOND);

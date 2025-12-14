@@ -2,16 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "  X",
-    " # ",
+    " 0 ",
     "#  "
   ],
   "key": {
-    "#": {
-      "item": "minecraft:stick"
-    },
-    "X": {
-      "item": "minecraft:stone"
-    }
+    "#": "minecraft:stick",
+    "0": "minecraft:ender_pearl",
+    "X": "minecraft:stone"
   },
   "result": {
     "id": "staffofbuilding:stone_builder_staff"

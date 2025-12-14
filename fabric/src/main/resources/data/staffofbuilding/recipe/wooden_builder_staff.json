@@ -2,16 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "  X",
-    " # ",
+    " 0 ",
     "#  "
   ],
   "key": {
-    "#": {
-      "item": "minecraft:stick"
-    },
-    "X": {
-      "item": "minecraft:oak_planks"
-    }
+    "#": "minecraft:stick",
+    "0": "minecraft:ender_pearl",
+    "X": "#minecraft:planks"
   },
   "result": {
     "id": "staffofbuilding:wooden_builder_staff"

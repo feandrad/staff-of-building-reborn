@@ -3,8 +3,9 @@ package draylar.staffofbuilding.fabric.registry;
 import draylar.staffofbuilding.fabric.StaffOfBuilding;
 import draylar.staffofbuilding.fabric.item.BuilderStaffItem;
 import net.minecraft.core.Registry;
-
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ToolMaterial;
 
@@ -29,6 +30,20 @@ public class ModItems {
     final public static BuilderStaffItem STAFF_BUILDING_STONE = new BuilderStaffItem(
             itemProperties("stone_builder_staff"),
             StaffOfBuilding.CONFIG.stoneSize, ToolMaterial.STONE);
+
+    private static final ToolMaterial COPPER_MATERIAL = new ToolMaterial(
+            BlockTags.INCORRECT_FOR_WOODEN_TOOL,
+            190,
+            5.0f,
+            1.0f,
+            15,
+            TagKey.create(net.minecraft.core.registries.Registries.ITEM, net.minecraft.resources.ResourceLocation.withDefaultNamespace("copper_ingots"))
+    );
+
+    final public static BuilderStaffItem STAFF_BUILDING_COPPER = new BuilderStaffItem(
+            itemProperties("copper_builder_staff"),
+            StaffOfBuilding.CONFIG.copperSize, COPPER_MATERIAL);
+
     final public static BuilderStaffItem STAFF_BUILDING_IRON = new BuilderStaffItem(
             itemProperties("iron_builder_staff"),
             StaffOfBuilding.CONFIG.ironSize, ToolMaterial.IRON);
@@ -54,6 +69,8 @@ public class ModItems {
             register("wooden_builder_staff", STAFF_BUILDING_WOOD);
         if (StaffOfBuilding.CONFIG.stoneEnabled)
             register("stone_builder_staff", STAFF_BUILDING_STONE);
+        if (StaffOfBuilding.CONFIG.copperEnabled)
+            register("copper_builder_staff", STAFF_BUILDING_COPPER);
         if (StaffOfBuilding.CONFIG.ironEnabled)
             register("iron_builder_staff", STAFF_BUILDING_IRON);
         if (StaffOfBuilding.CONFIG.goldenEnabled)

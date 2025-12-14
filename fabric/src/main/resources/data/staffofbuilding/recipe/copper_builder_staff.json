@@ -8,9 +8,9 @@
   "key": {
     "#": "minecraft:stick",
     "0": "minecraft:ender_pearl",
-    "X": "minecraft:gold_ingot"
+    "X": "minecraft:copper_ingot"
   },
   "result": {
-    "id": "staffofbuilding:golden_builder_staff"
+    "id": "staffofbuilding:copper_builder_staff"
   }
 }
